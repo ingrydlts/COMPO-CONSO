@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comportement du Consommateur – Cours Interactif</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #1a1a26;
+  --border: rgba(255,255,255,0.08);
+  --accent1: #6c63ff;
+  --accent2: #ff6b9d;
+  --accent3: #43e0c0;
+  --accent4: #ffd166;
+  --text: #e8e8f0;
+  --text2: #9090aa;
+  --text3: #5a5a70;
+  --success: #43e0c0;
+  --error: #ff6b9d;
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:16px; line-height:1.7; min-height:100vh; }
+h1,h2,h3,h4 { font-family:'Syne',sans-serif; line-height:1.2; }
+
+/* HEADER */
+.hero { padding: 60px 32px 40px; text-align:center; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,99,255,0.18) 0%, transparent 70%); pointer-events:none; }
+.hero-badge { display:inline-block; background:rgba(108,99,255,0.15); border:1px solid rgba(108,99,255,0.3); color:#a5a0ff; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; padding:6px 16px; border-radius:100px; margin-bottom:20px; }
+.hero h1 { font-size:clamp(28px,5vw,52px); font-weight:800; background:linear-gradient(135deg,#fff 0%,#a5a0ff 50%,#ff6b9d 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:16px; }
+.hero p { color:var(--text2); font-size:17px; max-width:540px; margin:0 auto 32px; }
+
+/* XP BAR */
+.xp-container { max-width:540px; margin:0 auto 16px; }
+.xp-label { display:flex; justify-content:space-between; font-size:13px; color:var(--text2); margin-bottom:8px; }
+.xp-bar { height:8px; background:var(--bg3); border-radius:100px; overflow:hidden; }
+.xp-fill { height:100%; background:linear-gradient(90deg,var(--accent1),var(--accent2)); border-radius:100px; transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1); width:0%; }
+.xp-stars { font-size:20px; display:flex; gap:4px; justify-content:center; margin-top:12px; }
+
+/* NAV TABS */
+.nav { max-width:900px; margin:0 auto 32px; padding:0 16px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+.tab-btn { background:var(--bg2); border:1px solid var(--border); color:var(--text2); padding:10px 20px; border-radius:100px; font-family:'DM Sans',sans-serif; font-size:14px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.tab-btn:hover { border-color:rgba(108,99,255,0.4); color:var(--text); }
+.tab-btn.active { background:rgba(108,99,255,0.15); border-color:var(--accent1); color:#a5a0ff; font-weight:500; }
+.tab-btn .num { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:rgba(108,99,255,0.25); border-radius:50%; font-size:11px; margin-right:6px; color:var(--accent1); }
+
+/* CONTENT */
+.content { max-width:900px; margin:0 auto; padding:0 16px 80px; }
+.section { display:none; animation:fadeIn 0.35s ease; }
+.section.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* CHAPTER CARD */
+.chapter-intro { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px 32px; margin-bottom:24px; }
+.chapter-intro h2 { font-size:22px; font-weight:700; margin-bottom:8px; }
+.chapter-intro .subtitle { color:var(--accent3); font-size:13px; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:16px; }
+.chapter-intro p { color:var(--text2); font-size:15px; }
+
+/* CONCEPT GRID */
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:24px; }
+.concept-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:20px; cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden; }
+.concept-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,transparent 60%,rgba(108,99,255,0.08)); pointer-events:none; }
+.concept-card:hover { border-color:rgba(108,99,255,0.4); transform:translateY(-2px); }
+.concept-card .icon { font-size:28px; margin-bottom:12px; }
+.concept-card h4 { font-size:15px; font-weight:600; margin-bottom:6px; }
+.concept-card p { font-size:13px; color:var(--text2); line-height:1.5; }
+.concept-card .tag { display:inline-block; background:rgba(108,99,255,0.12); color:#a5a0ff; font-size:11px; padding:3px 10px; border-radius:100px; margin-top:10px; }
+
+/* ACCORDION */
+.accordion { margin-bottom:12px; }
+.accordion-header { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:all 0.2s; }
+.accordion-header:hover { border-color:rgba(108,99,255,0.3); }
+.accordion-header.open { border-color:rgba(108,99,255,0.4); background:rgba(108,99,255,0.07); border-radius:var(--radius) var(--radius) 0 0; }
+.accordion-header h3 { font-size:16px; font-weight:600; }
+.accordion-arrow { color:var(--text3); transition:transform 0.3s; font-size:18px; }
+.accordion-header.open .accordion-arrow { transform:rotate(180deg); color:var(--accent1); }
+.accordion-body { background:var(--bg2); border:1px solid rgba(108,99,255,0.25); border-top:none; border-radius:0 0 var(--radius) var(--radius); padding:0 20px; max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.3s; }
+.accordion-body.open { max-height:1200px; padding:20px; }
+.accordion-body ul { list-style:none; padding:0; }
+.accordion-body ul li { padding:8px 0; border-bottom:1px solid var(--border); color:var(--text2); font-size:14px; display:flex; gap:10px; }
+.accordion-body ul li:last-child { border-bottom:none; }
+.accordion-body ul li::before { content:'→'; color:var(--accent1); flex-shrink:0; }
+.accordion-body p { color:var(--text2); font-size:14px; margin-bottom:12px; }
+.accordion-body table { width:100%; border-collapse:collapse; font-size:13px; margin-top:10px; }
+.accordion-body th { background:rgba(108,99,255,0.12); color:#a5a0ff; padding:8px 12px; text-align:left; font-weight:500; }
+.accordion-body td { padding:8px 12px; border-bottom:1px solid var(--border); color:var(--text2); }
+.accordion-body tr:last-child td { border-bottom:none; }
+
+/* MODEL CARDS */
+.model-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; margin:20px 0; }
+.model-card { background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:20px; }
+.model-card h4 { font-size:15px; font-weight:700; margin-bottom:4px; color:var(--accent3); }
+.model-card .author { font-size:12px; color:var(--text3); margin-bottom:12px; }
+.model-card p { font-size:13px; color:var(--text2); line-height:1.6; }
+.model-card .pros-cons { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.model-card .badge { font-size:11px; padding:3px 9px; border-radius:100px; }
+.badge-green { background:rgba(67,224,192,0.12); color:#43e0c0; border:1px solid rgba(67,224,192,0.2); }
+.badge-red { background:rgba(255,107,157,0.12); color:#ff6b9d; border:1px solid rgba(255,107,157,0.2); }
+
+/* PYRAMID */
+.pyramid { margin:24px 0; display:flex; flex-direction:column; align-items:center; gap:0; }
+.pyramid-level { display:flex; align-items:center; justify-content:center; border-radius:4px; font-size:13px; font-weight:500; transition:all 0.2s; cursor:pointer; }
+.pyramid-level:hover { filter:brightness(1.2); }
+
+/* FLASHCARD */
+.flashcard-area { perspective:1000px; margin:24px 0; }
+.flashcard { width:100%; min-height:200px; position:relative; transform-style:preserve-3d; transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1); cursor:pointer; }
+.flashcard.flipped { transform:rotateY(180deg); }
+.flashcard-face { position:absolute; inset:0; backface-visibility:hidden; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:200px; }
+.flashcard-back { transform:rotateY(180deg); border-color:rgba(108,99,255,0.4); background:rgba(108,99,255,0.07); }
+.flashcard-face h3 { font-size:18px; font-weight:700; margin-bottom:12px; }
+.flashcard-face p { color:var(--text2); font-size:14px; }
+.flashcard-nav { display:flex; gap:12px; justify-content:center; margin-top:16px; align-items:center; }
+.flashcard-nav button { background:var(--bg2); border:1px solid var(--border); color:var(--text); padding:10px 24px; border-radius:100px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:14px; transition:all 0.2s; }
+.flashcard-nav button:hover { border-color:var(--accent1); color:var(--accent1); }
+.flashcard-counter { color:var(--text3); font-size:13px; }
+
+/* QCM */
+.qcm-container { margin-top:16px; }
+.question-block { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px; margin-bottom:20px; }
+.question-block h3 { font-size:16px; font-weight:600; margin-bottom:20px; line-height:1.5; }
+.question-num { color:var(--accent1); font-size:13px; margin-bottom:8px; }
+.options { display:grid; gap:10px; }
+.option-btn { background:var(--bg3); border:1px solid var(--border); color:var(--text2); padding:14px 18px; border-radius:var(--radius); cursor:pointer; text-align:left; font-family:'DM Sans',sans-serif; font-size:14px; transition:all 0.2s; display:flex; align-items:center; gap:12px; }
+.option-btn:hover:not(:disabled) { border-color:rgba(108,99,255,0.4); color:var(--text); }
+.option-btn .opt-letter { width:26px; height:26px; border-radius:50%; background:rgba(108,99,255,0.12); color:#a5a0ff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; flex-shrink:0; }
+.option-btn.correct { border-color:#43e0c0; background:rgba(67,224,192,0.08); color:#43e0c0; }
+.option-btn.wrong { border-color:#ff6b9d; background:rgba(255,107,157,0.08); color:#ff6b9d; }
+.option-btn.correct .opt-letter { background:rgba(67,224,192,0.2); color:#43e0c0; }
+.option-btn.wrong .opt-letter { background:rgba(255,107,157,0.2); color:#ff6b9d; }
+.option-btn:disabled { cursor:default; }
+.feedback { margin-top:14px; padding:12px 16px; border-radius:var(--radius); font-size:14px; display:none; }
+.feedback.show { display:block; }
+.feedback.correct-fb { background:rgba(67,224,192,0.08); border:1px solid rgba(67,224,192,0.2); color:#43e0c0; }
+.feedback.wrong-fb { background:rgba(255,107,157,0.08); border:1px solid rgba(255,107,157,0.2); color:#ff6b9d; }
+
+.score-display { background:var(--bg2); border:1px solid var(--accent1); border-radius:var(--radius-lg); padding:32px; text-align:center; display:none; }
+.score-display h2 { font-size:28px; font-weight:800; margin-bottom:8px; }
+.score-display p { color:var(--text2); }
+.score-big { font-size:64px; font-weight:800; background:linear-gradient(135deg,var(--accent1),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; margin:16px 0; }
+.submit-qcm { background:linear-gradient(135deg,var(--accent1),var(--accent2)); color:#fff; border:none; padding:14px 40px; border-radius:100px; font-family:'Syne',sans-serif; font-size:16px; font-weight:700; cursor:pointer; transition:transform 0.2s; margin:20px auto; display:block; }
+.submit-qcm:hover { transform:scale(1.03); }
+.restart-btn { background:var(--bg2); border:1px solid var(--border); color:var(--text); padding:12px 32px; border-radius:100px; font-family:'DM Sans',sans-serif; font-size:14px; cursor:pointer; margin-top:16px; transition:all 0.2s; }
+.restart-btn:hover { border-color:var(--accent1); color:var(--accent1); }
+
+/* TIMELINE */
+.timeline { margin:20px 0; position:relative; padding-left:32px; }
+.timeline::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:var(--border); }
+.timeline-item { position:relative; margin-bottom:20px; }
+.timeline-item::before { content:''; position:absolute; left:-26px; top:6px; width:10px; height:10px; border-radius:50%; background:var(--accent1); border:2px solid var(--bg); }
+.timeline-item h4 { font-size:15px; font-weight:600; color:var(--accent3); margin-bottom:4px; }
+.timeline-item p { font-size:13px; color:var(--text2); }
+
+/* HIGHLIGHT BOX */
+.highlight-box { background:rgba(108,99,255,0.07); border:1px solid rgba(108,99,255,0.2); border-radius:var(--radius); padding:16px 20px; margin:16px 0; }
+.highlight-box p { color:var(--text2); font-size:14px; margin:0; }
+.highlight-box strong { color:var(--accent1); }
+
+/* TAGS ROW */
+.tags-row { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+.tag { background:rgba(67,224,192,0.1); color:#43e0c0; border:1px solid rgba(67,224,192,0.2); font-size:12px; padding:4px 12px; border-radius:100px; }
+.tag-orange { background:rgba(255,209,102,0.1); color:#ffd166; border-color:rgba(255,209,102,0.2); }
+.tag-pink { background:rgba(255,107,157,0.1); color:#ff6b9d; border-color:rgba(255,107,157,0.2); }
+.tag-purple { background:rgba(108,99,255,0.1); color:#a5a0ff; border-color:rgba(108,99,255,0.2); }
+
+/* RESPONSIVE */
+@media (max-width:600px) {
+  .hero { padding:40px 16px 28px; }
+  .concept-grid { grid-template-columns:1fr 1fr; }
+  .model-cards { grid-template-columns:1fr; }
+}
+
+.hidden { display:none !important; }
+.mt16 { margin-top:16px; }
+.mt24 { margin-top:24px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">PSB — M1 Digital Business · 28h de cours</div>
+  <h1>Comportement du Consommateur</h1>
+  <p>Ton guide interactif complet pour maîtriser la matière avant les partiels 🎯</p>
+  <div class="xp-container">
+    <div class="xp-label"><span>🏆 XP <span id="xp-val">0</span> / 500</span><span>Niveau <span id="level-val">1</span></span></div>
+    <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+    <div class="xp-stars" id="stars-row">⭐⭐⭐⭐⭐</div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="tab-btn active" onclick="showTab('intro')"><span class="num">1</span>Intro</button>
+  <button class="tab-btn" onclick="showTab('chap2')"><span class="num">2</span>Modèles</button>
+  <button class="tab-btn" onclick="showTab('chap3')"><span class="num">3</span>Déterminants</button>
+  <button class="tab-btn" onclick="showTab('chap4')"><span class="num">4</span>Fondements</button>
+  <button class="tab-btn" onclick="showTab('flashcards')">🃏 Flashcards</button>
+  <button class="tab-btn" onclick="showTab('qcm')">📝 QCM Partiel</button>
+</div>
+
+<div class="content">
+
+<!-- ===================== CHAP 1: INTRO ===================== -->
+<div class="section active" id="tab-intro">
+  <div class="chapter-intro">
+    <div class="subtitle">Chapitre I</div>
+    <h2>L'intérêt de l'analyse du comportement du consommateur</h2>
+    <p>Le comportement du consommateur est un phénomène complexe, à l'intersection de l'économie, de la psychologie, de la sociologie et de l'anthropologie. Comprendre pourquoi et comment les gens achètent est fondamental pour tout marketeur.</p>
+  </div>
+
+  <!-- LES 3 DIMENSIONS -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🌐 La consommation et ses 3 dimensions</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p>Tout acte de consommation comporte <strong>toujours une tension entre ces 3 pôles</strong>. Aucun acte n'est purement économique ou symbolique.</p>
+      <div class="concept-grid mt16">
+        <div class="concept-card">
+          <div class="icon">⚙️</div>
+          <h4>Fonctionnelle / Économique</h4>
+          <p>L'individu est un agent rationnel qui maximise son utilité sous contrainte budgétaire. Ex : boire de l'eau = hydratation.</p>
+          <div class="tag">Homo economicus</div>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🪞</div>
+          <h4>Identitaire</h4>
+          <p>Les objets possédés sont des extensions du moi. On exprime son identité psychologique ET collective à travers ses achats.</p>
+          <div class="tag">Concept de soi</div>
+        </div>
+        <div class="concept-card">
+          <div class="icon">👥</div>
+          <h4>Mythologique / Sociale</h4>
+          <p>Les objets communiquent notre position sociale. La pression de conformité pousse à adopter les mêmes comportements.</p>
+          <div class="tag">Influence sociale</div>
+        </div>
+      </div>
+      <div class="highlight-box">
+        <p><strong>Exemple Notion :</strong> "Billet de voyage" → 45% Identitaire (m'identifier au lieu), 45% Sociale (aller où vivent mes amis), 10% Économique (transport le moins cher)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPES DE CONSOMMATION -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🛒 Les 5 types de consommation</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <table>
+        <tr><th>Type</th><th>Caractère</th><th>Exemple</th></tr>
+        <tr><td><strong>Profane</strong></td><td>Fonctionnel, ordinaire</td><td>Eau minérale, pain, lumière</td></tr>
+        <tr><td><strong>Hédonique</strong></td><td>Émotionnel, multisensoriel</td><td>Parfum, restaurant gastronomique</td></tr>
+        <tr><td><strong>Ostentatoire</strong></td><td>Identitaire, statutaire</td><td>Ferrari, montre de luxe</td></tr>
+        <tr><td><strong>Compulsive</strong></td><td>Pathologique : achat répétitif non maîtrisé</td><td>Shopping pour calmer l'anxiété</td></tr>
+        <tr><td><strong>Addictive</strong></td><td>Pathologique : dépendance physio/psycho</td><td>Cigarettes, alcool, jeux</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ACHETEUR VS CONSOMMATEUR -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🆚 Acheteur vs Consommateur : différences clés</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <table>
+        <tr><th></th><th>Acheteur</th><th>Consommateur</th></tr>
+        <tr><td>Définition (Ladwein)</td><td>Accède à l'offre et contracte la transaction</td><td>Fait usage de l'offre et en extrait une utilité</td></tr>
+        <tr><td>Rôles comportementaux</td><td>Accès, transaction, transport</td><td>Manipulation, utilisation, extraction émotionnelle</td></tr>
+        <tr><td>Processus</td><td>Reconnaissance→Recherche→Évaluation→Choix</td><td>+ étape post-achat (évaluation, élimination)</td></tr>
+        <tr><td>Prise de décision</td><td>Achat dédié ou par délégation</td><td>Consommation motivée ou contrainte</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- TYPOLOGIES ACHETEUR -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>👨‍👩‍👧 Les 3 types d'acheteurs/consommateurs</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <ul>
+        <li><strong>Individuel :</strong> Un seul individu assume l'achat et/ou la consommation</li>
+        <li><strong>Familial :</strong> La famille forme un centre d'achat. Rôles : initiateur, informateur, influenceur, décideur, acheteur (achat) + manipulateur, transformateur, altérateur, extracteur (consommation)</li>
+        <li><strong>Industriel (B2B) :</strong> Instigateur, garde-barrière (gatekeeper), influenceur, acheteur. Complexité due au volume financier et à la multiplicité des intervenants</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- APPROCHES -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🔬 Approches descriptive vs explicative</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">📊</div>
+          <h4>Approche descriptive</h4>
+          <p>Observer le comportement d'achat. Sources : Nielsen, Secodip, Sofres, Ipsos, recensements INSEE.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🧪</div>
+          <h4>Approche explicative</h4>
+          <p>Identifier les facteurs explicatifs. 3 niveaux : socioculturel, interpersonnel, individuel. Disciplines : économie, psychologie, sociologie, anthropologie.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAS PRATIQUE TD -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>💼 TD1 — Famille Dupont : analyse des situations</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Situation 1 — Courses Carrefour</h4>
+          <p>Achat familial. Consommation profane (courses), hédonique (gel Winnie pour les enfants / parure lit pour Mme). M. Dupont : achat dédié. Enfants : consommation contrainte pour courses, motivée pour Winnie.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Situation 2 — TV LED 3D</h4>
+          <p>Achat individuel (M. Dupont cumule tous les rôles). Consommation hédonique pour lui (amateur de tech), profane/ostentatoire pour la famille. Processus complet déclenché par la panne + influence des collègues.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Situation 4 — Montre de luxe Mme Dupont</h4>
+          <p>Achat individuel. Consommation ostentatoire (montre de marque car toutes les collègues en portent). M. Dupont = acheteur (délégation). Mme Dupont = consommatrice motivée.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Situation 5 — Cigarettes</h4>
+          <p>Achat individuel. Consommation addictive. Achat dédié + consommation motivée.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Situation 6 — PC entreprise</h4>
+          <p>Achat industriel. Instigateur = directions, Gatekeeper = dir. achat, Influenceur = dir. informatique + achat, Acheteur = M. Dupont DGA. Achat par délégation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CHAP 2: MODÈLES ===================== -->
+<div class="section" id="tab-chap2">
+  <div class="chapter-intro">
+    <div class="subtitle">Chapitre II</div>
+    <h2>Les modèles explicatifs du comportement du consommateur</h2>
+    <p>Des modèles microéconomiques (homo economicus) aux modèles marketing intégrateurs qui prennent en compte l'ensemble des déterminants du comportement.</p>
+  </div>
+
+  <!-- MODELES MICRO-ECO -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>📐 Modèles micro-économiques</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="model-cards">
+        <div class="model-card">
+          <h4>Théorie classique</h4>
+          <div class="author">Homo Economicus</div>
+          <p>Le consommateur maximise son utilité sous contrainte budgétaire. 7 hypothèses : rationalité, transitivité, non-satiété, information parfaite, préférence des biens eux-mêmes, contrainte budgétaire, pas de distinction préférence/satisfaction.</p>
+          <div class="pros-cons">
+            <span class="badge badge-red">Trop agrégée</span>
+            <span class="badge badge-red">Ignore le social</span>
+            <span class="badge badge-red">Statique</span>
+          </div>
+        </div>
+        <div class="model-card">
+          <h4>Théorie de Lancaster (1966)</h4>
+          <div class="author">Nouvelle théorie micro-économique</div>
+          <p>La satisfaction vient des <strong>caractéristiques du produit</strong>, pas du produit en tant que tel. Hypothèses : linéarité, additivité, objectivité. Préfigure les modèles multi-attributs.</p>
+          <div class="pros-cons">
+            <span class="badge badge-green">Notion d'attribut</span>
+            <span class="badge badge-red">Objectivité irréaliste</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODELES MARKETING -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🎯 Modèle de Howard & Sheth (1969)</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p>Le modèle intégrateur le plus connu. Type <strong>intrant-extrant</strong> avec 4 groupes de variables :</p>
+      <div class="concept-grid mt16">
+        <div class="concept-card">
+          <div class="icon">🎯</div>
+          <h4>INPUTS (Stimuli)</h4>
+          <p><strong>Objectifs</strong> : caractéristiques du produit<br><strong>Symboliques</strong> : publicité, vendeur<br><strong>Sociaux</strong> : bouche-à-oreille</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🧠</div>
+          <h4>Boîte noire (processus interne)</h4>
+          <p><strong>Mécanismes perceptuels</strong> : réceptivité aux stimuli<br><strong>Mécanismes d'apprentissage</strong> : critères de choix, ensemble évoqué, motivations</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">📢</div>
+          <h4>OUTPUTS (Réponses)</h4>
+          <p><strong>Cognitives</strong> : Attention → Connaissance<br><strong>Affective</strong> : Attitude<br><strong>Conatives</strong> : Intention → Achat</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🌍</div>
+          <h4>Variables exogènes</h4>
+          <p>Importance de l'achat, culture, classe sociale, personnalité, temps disponible, statut financier</p>
+        </div>
+      </div>
+      <div class="highlight-box">
+        <p><strong>Forces :</strong> intégrateur, cohérent, robuste. <strong>Limite :</strong> difficile à tester (trop de variables)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🔄 Modèle Engel, Blackwell & Miniard (1990)</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p>Processus décisionnel central + unités périphériques. 5 phases du processus décisionnel :</p>
+      <ul>
+        <li>Reconnaissance du besoin (état de manque)</li>
+        <li>Recherche interne (mémoire LT) ET externe (sources extérieures)</li>
+        <li>Évaluation des alternatives (croyances sur le produit + attributs)</li>
+        <li>Achat de la meilleure alternative</li>
+        <li>Évaluation post-achat</li>
+      </ul>
+      <p class="mt16"><strong>Variables influençant le processus :</strong> motivations, expérience, ressources cognitives (individuelles) + culture, classe sociale, famille, situation (environnementales).</p>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🆕 Modèle Duhaine, Kindra, Laroche & Muller (1992)</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p>Le modèle le plus récent, inspiré des deux précédents. 5 étapes : déclenchement, recherche+évaluation (fusionnées), intention, décision, consommation. Influences venant de :</p>
+      <ul>
+        <li><strong>La mémoire :</strong> indique les sources, lieux de distribution, critères d'évaluation</li>
+        <li><strong>Facteurs environnementaux :</strong> culture, groupes de référence, classe sociale, famille, variables économiques</li>
+        <li><strong>Variables de situation :</strong> contraintes de temps, manque de fonds, cadeaux en argent</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TD2 CAS SONY -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>💻 TD2 — Cas Moez : achat d'un PC Sony Vaio</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p><strong>Type d'achat :</strong> individuel. <strong>Type de consommation :</strong> ostentatoire ("Moez se dit qu'on doit le qualifier de perfectionniste")</p>
+      <div class="concept-grid mt16">
+        <div class="concept-card">
+          <div class="icon">📮</div>
+          <h4>Stimuli d'Howard & Sheth</h4>
+          <p><strong>Objectifs :</strong> LG, Sony, Acer, HP — prix 900-2000€<br><strong>Symboliques :</strong> avis ami Karim + vendeur + publipostages Géant<br><strong>Sociaux :</strong> "Sony = perfectionniste", "produit japonais = qualité"</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">⚙️</div>
+          <h4>Variables exogènes</h4>
+          <p>Importance élevée (durable, cher), culture arabo-musulmane, classe moyenne, personnalité : complaisant, temps court, statut financier moyen</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">📊</div>
+          <h4>Réponses (Outputs)</h4>
+          <p><strong>Cognitif :</strong> attention (publipostages) → connaissance HP+Sony<br><strong>Affectif :</strong> attitude favorable à Sony<br><strong>Conatif :</strong> intention → achat Sony Vaio</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CHAP 3: DÉTERMINANTS ===================== -->
+<div class="section" id="tab-chap3">
+  <div class="chapter-intro">
+    <div class="subtitle">Chapitre III</div>
+    <h2>Les déterminants du comportement du consommateur</h2>
+    <p>Analyse en entonnoir : déterminants socioculturels → interpersonnels → individuels. Ces 3 niveaux s'emboîtent pour expliquer les choix de consommation.</p>
+  </div>
+
+  <!-- DÉTERMINANTS SOCIOCULTURELS -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🌍 Déterminants socioculturels : la Culture</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p><strong>Définition (Darpy & Volle, 2003) :</strong> ensemble de connaissances, croyances, normes, valeurs, traditions acquises et transmises par l'homme en tant que membre d'une société.</p>
+      <div class="concept-grid mt16">
+        <div class="concept-card">
+          <div class="icon">📚</div>
+          <h4>3 caractéristiques de la culture</h4>
+          <p>Apprise (socialisation/acculturation) → Partagée (règles communes) → Évolutive (intègre les changements)</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🗂️</div>
+          <h4>Sous-cultures</h4>
+          <p>Race, religion, région/ethnie. Comportements, coutumes et rituels distinctifs.</p>
+        </div>
+      </div>
+      <p class="mt16"><strong>5 dimensions de Hofstede (1983) :</strong></p>
+      <table>
+        <tr><th>Dimension</th><th>Description</th></tr>
+        <tr><td>Distance pouvoir</td><td>Rapport à l'autorité (Asie = vertical, USA = égalitaire)</td></tr>
+        <tr><td>Individualisme/Collectivisme</td><td>Bien-être individuel vs collectif</td></tr>
+        <tr><td>Masculinité/Féminité</td><td>Rôles acceptables de chaque sexe</td></tr>
+        <tr><td>Évitement incertitude</td><td>Aversion au risque et besoin de croyances</td></tr>
+        <tr><td>Orientation temporelle</td><td>Vision CT ou LT</td></tr>
+      </table>
+      <div class="highlight-box">
+        <p><strong>Impact marketing :</strong> individu conservateur/communautariste = perception du risque plus élevée, temps de réflexion plus long, attitude négative vis-à-vis des circuits impersonnels (GMS), préférence pour le marchandage.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>💰 Les Classes Sociales (A/B/C/D)</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p><strong>Définition :</strong> division homogène d'une société partageant valeurs, modes de vie et comportements de consommation similaires (Dussart, 1983).</p>
+      <p>3 critères : autorité hiérarchique (profession), culturelle (éducation), économique (revenu).</p>
+      <table>
+        <tr><th>Classe</th><th>Composition</th></tr>
+        <tr><td>A — Aisée</td><td>PDG, professions libérales</td></tr>
+        <tr><td>B — Moyenne sup.</td><td>Gestionnaires de moyennes entreprises, fonctionnaires</td></tr>
+        <tr><td>C — Moyenne inf.</td><td>Employés de bureau, techniciens, ventes</td></tr>
+        <tr><td>D — Modeste</td><td>Ouvriers spécialisés</td></tr>
+      </table>
+      <p class="mt16"><strong>Classe populaire :</strong> perception du risque élevée, préférence produits utilitaires/durables, bonne connaissance des prix et promos, préfère magasins de proximité aux GMS, messages pratiques à solutions.</p>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🎨 Le Style de Vie et l'approche AIO</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p>Plus lié à la consommation que la classe sociale (Petrof, 1992). L'approche <strong>AIO</strong> = Activités, Intérêts, Opinions.</p>
+      <table>
+        <tr><th>Activités</th><th>Intérêts</th><th>Opinions</th></tr>
+        <tr><td>Travail, Hobbies, Soirées, Vacances, Shopping</td><td>Famille, Mode, Nourriture, Médias</td><td>Soi-même, Politique, Économie, Culture</td></tr>
+      </table>
+      <div class="tags-row mt16">
+        <span class="tag">Segmentation</span>
+        <span class="tag">Conception produit</span>
+        <span class="tag">Choix médias</span>
+        <span class="tag">Tendances marché</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DÉTERMINANTS INTERPERSONNELS -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🤝 Déterminants interpersonnels : Groupes de référence</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">❤️</div>
+          <h4>Groupes primaires</h4>
+          <p>Interaction permanente : famille, amis proches.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🏢</div>
+          <h4>Groupes secondaires</h4>
+          <p>Interaction ponctuelle : collègues, club sportif, vendeur.</p>
+        </div>
+      </div>
+      <p class="mt16"><strong>2 types d'influence :</strong></p>
+      <ul>
+        <li><strong>Normative :</strong> prescripteur de normes (vestimentaires, de conduite)</li>
+        <li><strong>Informative :</strong> source d'informations (bouche-à-oreille)</li>
+      </ul>
+      <p class="mt16"><strong>Pouvoir conditionné par :</strong> expertise + crédibilité, système sanction/récompense, charisme et statut.</p>
+      <div class="highlight-box">
+        <p><strong>Bourne (1961) :</strong> Plus un produit se généralise, plus l'influence passe d'un choix du <strong>produit</strong> (générique) vers un choix de la <strong>marque</strong> (spécifique).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>👨‍👩‍👧 La Famille et la prise de décision conjugale</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <ul>
+        <li><strong>Famille d'orientation :</strong> famille de naissance (apprentissage des normes)</li>
+        <li><strong>Famille de procréation :</strong> famille fondée (transmission des normes)</li>
+      </ul>
+      <p class="mt16"><strong>4 types de décision conjugale (Davis & Rigaux, 1975) :</strong></p>
+      <table>
+        <tr><th>Type</th><th>Exemples produits</th></tr>
+        <tr><td>Mari dominant</td><td>Produits complexes techniquement (pneu, tondeuse)</td></tr>
+        <tr><td>Femme dominante</td><td>Produits liés au foyer (vêtements enfants, cuisine)</td></tr>
+        <tr><td>Syncratique (50/50)</td><td>Achats importants : vacances, logement, école</td></tr>
+        <tr><td>Autonome</td><td>Décisions séparées, chacun son domaine</td></tr>
+      </table>
+      <p class="mt16"><strong>Résolution des conflits familiaux :</strong> résolution du problème, marchandage, persuasion, coalition familiale (souvent les enfants).</p>
+    </div>
+  </div>
+
+  <!-- DÉTERMINANTS INDIVIDUELS -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>👤 Déterminants individuels : Âge, Éducation, Revenu</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <ul>
+        <li><strong>Âge / cycle de vie :</strong> Célibataire → couple sans enfants → enfants < 6 ans → > 6 ans → retraite. Chaque phase = types de consommation spécifiques.</li>
+        <li><strong>Éducation ↑ :</strong> plus réceptif aux innovations + recherche d'informations plus extensive</li>
+        <li><strong>Revenu ↑ :</strong> moins d'aversion au risque, plus réceptif aux produits onéreux</li>
+        <li><strong>Revenu disponible :</strong> après impôts → dépenses indispensables<br><strong>Revenu discrétionnaire :</strong> ce qu'il reste après les dépenses prioritaires</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🧬 La Personnalité : Freud, Horney & le Concept de Soi</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">🛋️</div>
+          <h4>Freud (structurelle)</h4>
+          <p><strong>Ça</strong> = principe plaisir (désirs inconscients)<br><strong>Moi</strong> = principe réalité<br><strong>Surmoi</strong> = code moral (normes parentales/sociétales)</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🤜</div>
+          <h4>Horney (socio-psycho) — CAD</h4>
+          <p><strong>C</strong>omplaisant = besoin estime, conformiste<br><strong>A</strong>gressif = besoin de pouvoir/statut<br><strong>D</strong>étaché = besoin d'autonomie</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🪞</div>
+          <h4>Concept de Soi</h4>
+          <p>Image réelle + Image idéale + Image sociale + Image sociale idéale → on choisit des produits dont l'image est congruente avec notre image de soi</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CHAP 4: FONDEMENTS ===================== -->
+<div class="section" id="tab-chap4">
+  <div class="chapter-intro">
+    <div class="subtitle">Chapitre IV</div>
+    <h2>Les fondements du comportement : décrypter la boîte noire</h2>
+    <p>Besoins, motivations, implication, perception et attitude — ces concepts clés expliquent le fonctionnement interne du consommateur face aux stimuli marketing.</p>
+  </div>
+
+  <!-- BESOINS -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>💡 Les besoins : Maslow & Sheth</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">🧬</div>
+          <h4>Besoins génériques (Abbott)</h4>
+          <p>Innés, naturels. Orientent vers une utilité recherchée. Ex : besoin de se divertir.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🎮</div>
+          <h4>Besoins dérivés (Abbott)</h4>
+          <p>Spécifiques/désirs. Plus spécifiques, risque de saturation. Ex : jeu vidéo vs échecs.</p>
+        </div>
+      </div>
+      <p class="mt16"><strong>Pyramide de Maslow (1970) :</strong></p>
+      <div class="pyramid" id="maslow">
+        <div class="pyramid-level" style="width:200px;height:40px;background:#6c63ff22;border:1px solid #6c63ff44;color:#a5a0ff;margin-bottom:4px;font-size:13px;border-radius:4px;">5. Accomplissement de soi</div>
+        <div class="pyramid-level" style="width:260px;height:40px;background:#ff6b9d22;border:1px solid #ff6b9d44;color:#ff6b9d;margin-bottom:4px;font-size:13px;border-radius:4px;">4. Estime et reconnaissance</div>
+        <div class="pyramid-level" style="width:320px;height:40px;background:#43e0c022;border:1px solid #43e0c044;color:#43e0c0;margin-bottom:4px;font-size:13px;border-radius:4px;">3. Appartenance et affection</div>
+        <div class="pyramid-level" style="width:380px;height:40px;background:#ffd16622;border:1px solid #ffd16644;color:#ffd166;margin-bottom:4px;font-size:13px;border-radius:4px;">2. Sécurité (abri, protection)</div>
+        <div class="pyramid-level" style="width:440px;height:40px;background:#5a5a7022;border:1px solid #5a5a7044;color:#9090aa;font-size:13px;border-radius:4px;">1. Physiologiques (manger, boire, dormir)</div>
+      </div>
+      <p class="mt16"><strong>Sheth (1976) :</strong> Besoins <em>utilitaires</em> (qualités tangibles/objectives) vs <em>hédoniques</em> (émotions, confiance en soi induites par la consommation).</p>
+    </div>
+  </div>
+
+  <!-- MOTIVATION & IMPLICATION -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>⚡ Motivation et Implication</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p><strong>Motivation (Derbaix & Brée) :</strong> volonté d'agir (énergie) dans un but précis (direction) pour trouver les moyens privilégiés (désirs) de satisfaire un besoin.</p>
+      <ul>
+        <li>La motivation est en U inversé : au-delà d'un degré optimal, l'efficacité diminue</li>
+        <li>2 motivations contradictoires peuvent engendrer un même comportement</li>
+        <li>1 même motivation peut engendrer 2 comportements différents</li>
+      </ul>
+      <p class="mt16"><strong>Implication :</strong> état non observable, créé par des variables externes (produit, pub, situation) et internes (besoins, valeurs, expériences).</p>
+      <div class="concept-grid mt16">
+        <div class="concept-card">
+          <div class="icon">🧠</div>
+          <h4>Implication cognitive</h4>
+          <p>Motivation utilitariste → fonctionnalité du produit</p>
+          <div class="tag">Utilitaire</div>
+        </div>
+        <div class="concept-card">
+          <div class="icon">❤️</div>
+          <h4>Implication affective</h4>
+          <p>Motivation hédonique (plaisir) + d'auto-expression (signe)</p>
+          <div class="tag-pink tag">Hédonique</div>
+        </div>
+        <div class="concept-card">
+          <div class="icon">📅</div>
+          <h4>Implication durable</h4>
+          <p>Indépendante de l'achat, liée à l'expérience et aux valeurs</p>
+          <div class="tag-orange tag">Long terme</div>
+        </div>
+        <div class="concept-card">
+          <div class="icon">⏱️</div>
+          <h4>Implication situationnelle</h4>
+          <p>Liée à une situation d'achat spécifique (Aïd, cadeau)</p>
+          <div class="tag-purple tag">Court terme</div>
+        </div>
+      </div>
+      <p class="mt16"><strong>7 types de risque perçu (Jacoby & Kaplan, 1972) :</strong> fonctionnel, financier, physique, social, psychologique, perte de temps, d'opportunité.</p>
+      <p><strong>5 antécédents de l'implication (Kapferer & Laurent, 1986) :</strong> intérêt personnel pour la catégorie, risque probabilité d'erreur, risque conséquences, valeur de signe, valeur hédonique.</p>
+    </div>
+  </div>
+
+  <!-- PERCEPTION -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>👁️ La Perception : 3 étapes clés</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p><strong>Définition (Solomon) :</strong> processus par lequel des sensations physiques (images, sons, odeurs) sont sélectionnées, organisées et interprétées.</p>
+      <p><strong>5 caractéristiques :</strong> sélective (capacité limitée : 7+/-2 infos), déformante (biais perceptuels), subjective (différente selon les individus), cumulative (ensemble de sensations), temporelle (évolue avec l'expérience).</p>
+
+      <div class="timeline mt16">
+        <div class="timeline-item">
+          <h4>Étape 1 — Exposition à l'information</h4>
+          <p>Sensation par les 5 registres sensoriels. Seuil absolu (intensité minimale perceptible) + Seuil terminal (intensité maximale). Sensibilité = différence liminaire (loi de Weber).</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Étape 2 — Attention</h4>
+          <p>Fonctions : sélectivité, vigilance, défense, adaptation, partage. <strong>Déterminants stimulus :</strong> intensité, taille, contraste, mouvement, répétition, emplacement. <strong>Déterminants individu :</strong> motivation, état d'esprit, valeurs, attentes, connaissances, risque perçu.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Étape 3 — Interprétation (Gestalt)</h4>
+          <p>3 principes de la Gestalt : <strong>Clôture</strong> (image incomplète perçue comme complète), <strong>Similitude</strong> (regroupement d'objets similaires), <strong>Figure/Fond</strong> (un élément domine les autres).</p>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <p><strong>5 registres sensoriels :</strong> visuel (couleurs/formes), auditif (jingle, musique en magasin), tactile (texture), gustatif (saveurs), olfactif (odeurs). Chaque registre génère des significations qui varient selon la culture.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATTITUDE -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3>🎭 L'Attitude et son changement</h3>
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <p><strong>Définition :</strong> prédisposition à évaluer d'une certaine manière (positive ou négative) un produit ou une marque.</p>
+      <div class="concept-grid mt16">
+        <div class="concept-card">
+          <div class="icon">💭</div>
+          <h4>Composante Cognitive</h4>
+          <p>Connaissances, croyances, associations (ex : prix élevé = qualité). Réseau d'inférences.</p>
+          <div class="tag">Savoir</div>
+        </div>
+        <div class="concept-card">
+          <div class="icon">💖</div>
+          <h4>Composante Affective</h4>
+          <p>Émotions et sentiments positifs/négatifs. Évaluation holistique du produit.</p>
+          <div class="tag-pink tag">Sentir</div>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🎯</div>
+          <h4>Composante Conative</h4>
+          <p>Intentions d'achat, fidélité, boycott. Permet de prévoir les ventes.</p>
+          <div class="tag-orange tag">Agir</div>
+        </div>
+      </div>
+      <p class="mt16"><strong>Changement d'attitude :</strong></p>
+      <ul>
+        <li><strong>Dissonance cognitive (Festinger, 1957) :</strong> incongruence psychologique → changer la désirabilité ou chercher des infos sélectives pour conforter son choix</li>
+        <li><strong>Persuasion :</strong> stratégie adaptative (accorder au message avec l'attitude préexistante) vs stratégie de rupture (modifier l'attitude)</li>
+      </ul>
+      <div class="highlight-box">
+        <p><strong>Règle clé :</strong> La composante cognitive est plus facile à changer que la composante affective. Une attitude liée à un faible degré d'implication est plus facile à modifier.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FLASHCARDS ===================== -->
+<div class="section" id="tab-flashcards">
+  <div class="chapter-intro">
+    <div class="subtitle">Mémorisation active</div>
+    <h2>🃏 Flashcards — Révise les définitions clés</h2>
+    <p>Clique sur la carte pour voir la réponse. Navigue avec les boutons.</p>
+  </div>
+
+  <div class="flashcard-area">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-face" id="card-front">
+        <div style="font-size:36px;margin-bottom:16px;">❓</div>
+        <h3 id="card-question">Loading...</h3>
+        <p style="color:var(--text3);font-size:13px;margin-top:12px;">Clique pour voir la réponse</p>
+      </div>
+      <div class="flashcard-face flashcard-back" id="card-back">
+        <div style="font-size:36px;margin-bottom:16px;">✅</div>
+        <h3 style="color:var(--accent3);" id="card-answer-title">Réponse</h3>
+        <p id="card-answer" style="font-size:14px;color:var(--text2);margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+  <div class="flashcard-nav">
+    <button onclick="prevCard()">← Précédent</button>
+    <span class="flashcard-counter" id="card-counter">1 / 20</span>
+    <button onclick="nextCard()">Suivant →</button>
+  </div>
+</div>
+
+<!-- ===================== QCM ===================== -->
+<div class="section" id="tab-qcm">
+  <div class="chapter-intro">
+    <div class="subtitle">Évaluation finale</div>
+    <h2>📝 QCM — Simulation partiel (20 questions)</h2>
+    <p>Valide tes connaissances sur l'ensemble de la matière. Chaque bonne réponse = +25 XP.</p>
+  </div>
+
+  <div class="qcm-container" id="qcm-container"></div>
+  <div class="score-display" id="score-display">
+    <h2>🎓 Résultat Final</h2>
+    <div class="score-big" id="score-big">0/20</div>
+    <p id="score-msg"></p>
+    <button class="restart-btn" onclick="restartQCM()">🔄 Recommencer le QCM</button>
+  </div>
+</div>
+
+</div><!-- end .content -->
+
+<script>
+const XP_KEY = 'comp_conso_xp';
+let totalXP = parseInt(localStorage.getItem(XP_KEY) || '0');
+
+function updateXP(pts) {
+  totalXP = Math.min(totalXP + pts, 500);
+  localStorage.setItem(XP_KEY, totalXP);
+  renderXP();
+}
+
+function renderXP() {
+  document.getElementById('xp-val').textContent = totalXP;
+  document.getElementById('level-val').textContent = Math.floor(totalXP / 100) + 1;
+  document.getElementById('xp-fill').style.width = (totalXP / 500 * 100) + '%';
+  const stars = '⭐'.repeat(Math.min(5, Math.ceil(totalXP / 100)));
+  const empty = '☆'.repeat(5 - Math.min(5, Math.ceil(totalXP / 100)));
+  document.getElementById('stars-row').textContent = stars + empty;
+}
+
+renderXP();
+
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  updateXP(5);
+}
+
+function toggleAccordion(header) {
+  const body = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  document.querySelectorAll('.accordion-header.open').forEach(h => {
+    h.classList.remove('open');
+    h.nextElementSibling.classList.remove('open');
+  });
+  if (!isOpen) {
+    header.classList.add('open');
+    body.classList.add('open');
+    updateXP(3);
+  }
+}
+
+// FLASHCARDS
+const cards = [
+  {q:"Définition du consommateur (Ladwein, 2003)", a:"Celui qui fait usage de l'offre et en extrait une utilité. Le comportement du consommateur intègre une étape de post-achat (évaluation, expérience d'utilisation)."},
+  {q:"Quelles sont les 3 dimensions de la consommation ?", a:"1. Fonctionnelle/économique (utilité, rationalité) 2. Identitaire (expression du moi, concept de soi) 3. Mythologique/Sociale (appartenance, statut, pression de conformité)"},
+  {q:"Définition de la culture (Darpy & Volle, 2003)", a:"Ensemble de connaissances, croyances, normes, valeurs, traditions acquises et transmises par l'homme en tant que membre d'une société. Elle est : apprise, partagée et évolutive."},
+  {q:"Les 5 dimensions de la culture selon Hofstede (1983)", a:"1. Distance vis-à-vis du pouvoir 2. Individualisme/Collectivisme 3. Masculinité/Féminité 4. Évitement de l'incertitude 5. Orientation temporelle"},
+  {q:"Qu'est-ce qu'un groupe de référence primaire vs secondaire ?", a:"Primaire = interaction permanente (famille, amis proches). Secondaire = interaction ponctuelle (collègues, vendeur, publicité). Les deux peuvent exercer une influence normative ou informative."},
+  {q:"Définition de l'implication (Kapferer & Laurent, 1986)", a:"État non observable de motivation, d'excitation ou d'intérêt, créé par des variables externes (produit, pub, situation) et internes (besoins, valeurs, expériences), entraînant des comportements spécifiques."},
+  {q:"Les 5 antécédents de l'implication selon Kapferer & Laurent", a:"1. Intérêt personnel pour la catégorie 2. Risque associé à la probabilité d'une erreur 3. Risque associé aux conséquences 4. Valeur de signe du produit 5. Valeur hédonique du produit"},
+  {q:"Quelle est la différence entre motivation et implication ?", a:"La motivation relève d'une force interne rattachée à un besoin humain. L'implication renvoie à la RELATION liant le consommateur à un objet (produit/marque/pub/situation d'achat)."},
+  {q:"Les 3 composantes de l'attitude", a:"1. Cognitive = connaissances, croyances, associations (savoir) 2. Affective = émotions et sentiments positifs/négatifs (sentir) 3. Conative = intentions de comportement/achat (agir)"},
+  {q:"Théorie de la dissonance cognitive (Festinger, 1957)", a:"Chaque individu a besoin d'ordre dans ses croyances. En cas d'incongruence, il peut : 1. Changer la désirabilité subjective des alternatives 2. Recueillir sélectivement des infos pour conforter son choix."},
+  {q:"Les 3 principes de la Gestalt", a:"1. Clôture : image incomplète perçue comme complète 2. Similitude : regroupement d'objets similaires 3. Figure/Fond : un élément dominant (figure) sur les autres (fond)."},
+  {q:"Qu'est-ce que le modèle de Howard & Sheth (1969) ?", a:"1er modèle intégrateur. 4 variables : Stimuli (objectifs/symboliques/sociaux) → Processus interne/boîte noire (perceptuels + apprentissage) → Variables exogènes → Outputs (cognitifs/affectifs/conatifs)."},
+  {q:"Pyramide de Maslow : les 2 grandes catégories", a:"Besoins PHYSIOLOGIQUES (innés) : physiologiques + sécurité. Besoins PSYCHOGÉNIQUES (acquis) : appartenance/affection + estime/statut + accomplissement de soi."},
+  {q:"Différence entre consommation hédonique et ostentatoire", a:"Hédonique = émotionnel, multisensoriel, imaginatif (lien d'affect). Ostentatoire = identitaire, biens luxueux destinés à MONTRER aux autres sa capacité financière."},
+  {q:"Les 4 types de décision familiale (Davis & Rigaux, 1975)", a:"1. Autonome (décisions séparées) 2. Mari dominant (produits tech) 3. Épouse dominante (produits foyer) 4. Syncratique (participation égale des 2 : achats importants)"},
+  {q:"Les 7 types de risque perçu (Jacoby & Kaplan, 1972)", a:"Fonctionnel, financier, physique, social (rejet groupe), psychologique (insatisfaction/regret), perte de temps, opportunité (nouvelle version sort juste après l'achat)."},
+  {q:"Qu'est-ce que la théorie de Lancaster (1966) ?", a:"La satisfaction du consommateur vient des CARACTÉRISTIQUES du produit, pas du produit en tant que tel. 3 hypothèses : linéarité, additivité, objectivité. Préfigure les modèles multi-attributs."},
+  {q:"Définition d'une classe sociale (Dussart, 1983)", a:"Division relativement permanente et homogène d'une société, au sein de laquelle des individus partagent des valeurs, modes de vie, intérêts et comportements de consommation similaires. Critères : profession, éducation, revenu."},
+  {q:"Les rôles dans l'achat familial", a:"Initiateur (active le besoin), Informateur (collecte les infos), Influenceur (influence l'évaluation), Décideur (prend la décision), Acheteur (finance et réalise l'achat)."},
+  {q:"Concept de soi : les 4 images", a:"Image réelle (comment je me vois), Image idéale (ce à quoi je voudrais ressembler), Image sociale (comment les autres me perçoivent à mon avis), Image sociale idéale (comment j'aimerais que les autres me perçoivent)."},
+];
+
+let cardIndex = 0;
+let cardFlipped = false;
+
+function renderCard() {
+  document.getElementById('card-question').textContent = cards[cardIndex].q;
+  document.getElementById('card-answer-title').textContent = "Réponse";
+  document.getElementById('card-answer').textContent = cards[cardIndex].a;
+  document.getElementById('card-counter').textContent = (cardIndex+1) + ' / ' + cards.length;
+  const fc = document.getElementById('flashcard');
+  fc.classList.remove('flipped');
+  cardFlipped = false;
+}
+
+function flipCard() {
+  const fc = document.getElementById('flashcard');
+  cardFlipped = !cardFlipped;
+  if(cardFlipped) { fc.classList.add('flipped'); updateXP(2); }
+  else fc.classList.remove('flipped');
+}
+
+function nextCard() {
+  cardIndex = (cardIndex + 1) % cards.length;
+  renderCard();
+}
+function prevCard() {
+  cardIndex = (cardIndex - 1 + cards.length) % cards.length;
+  renderCard();
+}
+
+renderCard();
+
+// QCM
+const questions = [
+  {q:"Selon Ladwein (2003), quelle est la différence principale entre l'acheteur et le consommateur ?", opts:["L'acheteur consomme le produit, le consommateur l'achète","L'acheteur accède à l'offre et fait la transaction, le consommateur fait usage de l'offre","L'acheteur est toujours rationnel, le consommateur émotionnel","Il n'y a aucune différence entre les deux"], correct:1, expl:"L'acheteur va accéder à l'offre et procéder à la transaction ; le consommateur est celui qui fait usage de l'offre et en extrait une utilité."},
+  {q:"La consommation ostentatoire se caractérise par :", opts:["Un achat répétitif non maîtrisé pour calmer une anxiété","Une consommation émotionnelle et multisensorielle","Une consommation de biens luxueux destinée à montrer aux autres sa capacité financière","Une dépendance physiologique au produit"], correct:2, expl:"La consommation ostentatoire est à caractère identitaire, renvoyant à la consommation de biens souvent luxueux destinée à montrer aux autres sa capacité à se les offrir."},
+  {q:"Quelles sont les 3 composantes de l'attitude envers un produit ?", opts:["Rationnelle, émotionnelle, comportementale","Cognitive, affective, conative","Consciente, inconsciente, latente","Fonctionnelle, symbolique, hédonique"], correct:1, expl:"L'attitude se structure autour de 3 composantes : cognitive (connaissances/croyances), affective (émotions/sentiments), conative (intentions d'achat/comportement)."},
+  {q:"Selon Hofstede (1983), combien de dimensions permettent de distinguer les cultures ?", opts:["3 dimensions","4 dimensions","5 dimensions","7 dimensions"], correct:2, expl:"5 dimensions : distance vis-à-vis du pouvoir, individualisme/collectivisme, masculinité/féminité, évitement de l'incertitude, orientation temporelle."},
+  {q:"Dans le modèle de Howard & Sheth (1969), les 'inputs' comprennent :", opts:["Uniquement les stimuli publicitaires","Stimuli objectifs, symboliques et sociaux","Uniquement les variables endogènes","Attitudes, intentions et comportements"], correct:1, expl:"Les stimuli (inputs) sont de 3 types : objectifs (caractéristiques du produit), symboliques/subjectifs (publicité, vendeur), sociaux (bouche-à-oreille, famille)."},
+  {q:"La théorie de Lancaster (1966) postule que :", opts:["Le consommateur est un homo economicus parfaitement rationnel","La satisfaction vient des caractéristiques du produit, pas du produit en tant que tel","Les préférences sont toujours transitives","Le consommateur ignore les informations sociales"], correct:1, expl:"Lancaster postule que la satisfaction est générée par les CARACTÉRISTIQUES du produit (calories, protéines, etc.), pas par le produit lui-même."},
+  {q:"Les 5 antécédents de l'implication selon Kapferer & Laurent (1986) incluent :", opts:["Prix, qualité, disponibilité, service, marque","Intérêt personnel, risque d'erreur, risque des conséquences, valeur de signe, valeur hédonique","Attitude, intention, achat, satisfaction, fidélité","Culture, classe sociale, famille, personnalité, revenu"], correct:1, expl:"Kapferer & Laurent identifient 5 antécédents : intérêt personnel pour la catégorie, risque probabilité d'erreur, risque conséquences de l'achat, valeur de signe, valeur hédonique."},
+  {q:"Un consommateur qui vit dans un milieu collectiviste (vs individualiste) sera caractérisé par :", opts:["Une faible perception du risque social","Une préférence pour les GMS plutôt que les magasins de proximité","Un temps de réflexion plus long et une aversion au risque social plus élevée","Une attitude positive vis-à-vis des prix fixes"], correct:2, expl:"Dans les cultures collectivistes : perception du risque plus élevée pour les nouveaux produits, implication plus forte pour les produits publics, et temps de réflexion plus long."},
+  {q:"La pyramide de Maslow distingue :", opts:["Besoins innés (physiologiques, sécurité) et besoins acquis (appartenance, estime, accomplissement)","Besoins utilitaires et besoins hédoniques","Besoins génériques et besoins dérivés","Besoins rationnels et besoins irrationnels"], correct:0, expl:"Maslow distingue les besoins physiologiques (innés, biologiques) des besoins psychogéniques (acquis en tant que membre d'une culture) : appartenance, estime et accomplissement de soi."},
+  {q:"Selon la théorie de la dissonance cognitive (Festinger, 1957), comment un consommateur réduit-il sa dissonance ?", opts:["Il retourne systématiquement le produit","Il change la désirabilité des alternatives OU cherche sélectivement des infos pour conforter son choix","Il adopte toujours le comportement de son groupe de référence","Il demande l'avis du vendeur"], correct:1, expl:"Pour réduire la dissonance, le consommateur peut : 1) changer la désirabilité subjective des alternatives de choix, 2) recueillir sélectivement des informations confortant son choix."},
+  {q:"Le principe de clôture (Gestalt) signifie que :", opts:["Le consommateur regroupe les objets similaires","Un élément domine les autres en fond","L'individu peut percevoir une image incomplète comme complète","Le stimulus doit être répété pour être perçu"], correct:2, expl:"Le principe de clôture (ou de continuité) postule que l'individu peut percevoir une image incomplète comme complète — il peut lire un mot avec des lettres manquantes ou reconnaître un jingle aux 4 premières notes."},
+  {q:"Dans quelle situation la prise de décision familiale est-elle de type 'syncratique' ?", opts:["L'achat d'un billet de train pour une personne","L'achat d'un pneu ou d'une tondeuse","Un achat important : vacances, logement, école","L'achat des vêtements des enfants"], correct:2, expl:"La prise de décision syncratique (participation égale des 2 époux) caractérise les achats importants : vacances, logement, école. Plus l'achat est important, plus le niveau d'implication du couple est élevé."},
+  {q:"Les groupes de référence exercent une influence 'générique' vers une influence 'spécifique' quand :", opts:["Le produit est cher","Le produit devient de plus en plus répandu dans la société","Le produit est très technique","Le produit est nouveau sur le marché"], correct:1, expl:"Bourne (1961) : plus l'utilisation d'un produit se généralise, plus l'influence du groupe passe d'une influence sur le choix du PRODUIT (générique) vers une influence sur le choix de la MARQUE (spécifique)."},
+  {q:"La théorie socio-psychologique de Horney identifie 3 types de personnalités :", opts:["Extraverti, introverti, ambivert","Complaisant (C), Agressif (A), Détaché (D)","Rationnel, émotionnel, instinctif","Leader, suiveur, indépendant"], correct:1, expl:"Horney (théorie CAD) : Complaisants (conformistes, besoin d'estime), Agressifs (sentiment d'infériorité, besoin de pouvoir), Détachés (besoin d'autonomie)."},
+  {q:"L'approche AIO dans l'analyse des styles de vie comprend :", opts:["Attitudes, Image, Opinions","Achats, Interactions, Objectifs","Activités, Intérêts, Opinions","Analyse, Identification, Objectifs"], correct:2, expl:"AIO = Activités (travail, hobbies, shopping, sports), Intérêts (famille, mode, nourriture, médias), Opinions (politique, économie, éducation, culture)."},
+  {q:"Dans le modèle d'Engel, Blackwell & Miniard (1990), les 5 phases du processus décisionnel sont :", opts:["Attention, intérêt, désir, action, satisfaction","Reconnaissance du besoin, recherche d'infos, évaluation des alternatives, achat, évaluation post-achat","Stimuli, perception, attitude, intention, achat","Besoin, motivation, implication, perception, attitude"], correct:1, expl:"EBM propose 5 phases : 1) Reconnaissance du besoin 2) Recherche d'informations (interne + externe) 3) Évaluation des alternatives 4) Achat de la meilleure alternative 5) Évaluation post-achat."},
+  {q:"Quel est le 'seuil différentiel' en perception ?", opts:["L'intensité minimale à partir de laquelle le stimulus devient perceptible","L'intensité maximale à partir de laquelle le stimulus n'est plus perceptible","La variation minimale à partir de laquelle l'individu perçoit une différence entre deux stimuli","Le niveau optimal de stimulation sensorielle"], correct:2, expl:"Le seuil différentiel (ou sensibilité) est la variation minimale à partir de laquelle l'individu perçoit une différence entre deux stimuli. Ex : +200€ sur un appart de 40 000€ vs +200€ sur une TV de 400€."},
+  {q:"Dans l'achat industriel (B2B), quel est le rôle du 'gatekeeper' ?", opts:["Il prend la décision finale d'achat","Il assure la recherche d'informations et identifie les fournisseurs potentiels","Il initie le besoin dans l'organisation","Il consomme et utilise le produit acheté"], correct:1, expl:"Le garde-barrière (gatekeeper) est celui qui assure la recherche d'informations et identifie pour l'entreprise les fournisseurs et produits potentiels."},
+  {q:"L'implication durable se distingue de l'implication situationnelle car :", opts:["Elle est plus intense","Elle est indépendante d'un achat spécifique, liée à l'intérêt pour la catégorie de produit et aux valeurs","Elle concerne uniquement les produits de luxe","Elle est toujours de nature affective"], correct:1, expl:"L'implication durable est indépendante de l'achat, rattachée à l'intérêt du consommateur pour la catégorie de produit (expérience) et à son système de valeurs. Elle différente de l'implication situationnelle liée à une situation spécifique."},
+  {q:"Quel est l'apport principal de la consommation à la construction de l'identité selon le cours ?", opts:["La consommation n'a pas de lien avec l'identité","Les objets possédés sont des extensions du moi ; on choisit des produits dont l'image est congruente avec l'image de soi","L'identité est uniquement construite par la famille","Seule la consommation de luxe construit l'identité"], correct:1, expl:"La consommation est une production de sens et d'identité. Les objets possédés sont des extensions du moi. On choisit des marques/produits dont l'image est congruente avec notre image réelle/idéale/sociale."},
+];
+
+let answered = new Array(questions.length).fill(false);
+let correctCount = 0;
+
+function buildQCM() {
+  const container = document.getElementById('qcm-container');
+  container.innerHTML = '';
+  answered.fill(false);
+  correctCount = 0;
+  document.getElementById('score-display').style.display = 'none';
+
+  questions.forEach((q, qi) => {
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    block.innerHTML = `
+      <div class="question-num">Question ${qi+1} / ${questions.length}</div>
+      <h3>${q.q}</h3>
+      <div class="options">
+        ${q.opts.map((opt,oi)=>`
+          <button class="option-btn" onclick="selectAnswer(${qi},${oi})" id="opt-${qi}-${oi}">
+            <span class="opt-letter">${['A','B','C','D'][oi]}</span>
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="feedback" id="fb-${qi}"></div>
+    `;
+    container.appendChild(block);
+  });
+
+  const btn = document.createElement('button');
+  btn.className = 'submit-qcm';
+  btn.textContent = '🎓 Voir mon score';
+  btn.onclick = showScore;
+  container.appendChild(btn);
+}
+
+function selectAnswer(qi, selected) {
+  if(answered[qi]) return;
+  answered[qi] = true;
+  const q = questions[qi];
+  const opts = document.querySelectorAll(`[id^="opt-${qi}-"]`);
+  opts.forEach(btn => btn.disabled = true);
+  opts[selected].classList.add(selected === q.correct ? 'correct' : 'wrong');
+  opts[q.correct].classList.add('correct');
+  if(selected === q.correct) correctCount++;
+  const fb = document.getElementById('fb-'+qi);
+  fb.className = 'feedback show ' + (selected === q.correct ? 'correct-fb' : 'wrong-fb');
+  fb.textContent = (selected === q.correct ? '✅ Correct ! ' : '❌ Incorrect. ') + q.expl;
+  updateXP(selected === q.correct ? 25 : 5);
+}
+
+function showScore() {
+  const sd = document.getElementById('score-display');
+  sd.style.display = 'block';
+  document.getElementById('score-big').textContent = correctCount + '/20';
+  let msg = '';
+  if(correctCount >= 18) msg = '🏆 Excellent ! Tu maîtrises parfaitement la matière !';
+  else if(correctCount >= 15) msg = '👍 Très bien ! Quelques points à revoir.';
+  else if(correctCount >= 10) msg = '📚 Correct. Revois les chapitres sur lesquels tu as buté.';
+  else msg = '💪 Continue de réviser ! Relis les cours et retente.';
+  document.getElementById('score-msg').textContent = msg;
+  sd.scrollIntoView({behavior:'smooth'});
+  updateXP(correctCount * 5);
+}
+
+function restartQCM() {
+  buildQCM();
+  window.scrollTo({top: document.getElementById('tab-qcm').offsetTop, behavior: 'smooth'});
+}
+
+buildQCM();
+</script>
+</body>
+</html>
